@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">录音机</string>
+    <string name="startRecord">开始录音</string>
+    <string name="stopRecord">停止录音</string>
+</resources>
