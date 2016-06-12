@@ -15,14 +15,55 @@ public class MainActivity extends AppCompatActivity {
 
     private String LOG_TAG = "lizhao";
     private MediaRecorder mRecorder;
+    private Button mStartRecord;
+    private Button mStopRecord;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        final Button mStopRecord = (Button) findViewById(R.id.stopRecord);
+        mStopRecord.setEnabled(false);
+        final Button mStartRecord = (Button)findViewById(R.id.startRecord);
+        mStartRecord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mRecorder = new MediaRecorder();
+                mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                mRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
+                mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
+                mRecorder.setOutputFile(AudioPath());
 
-        Button stopbutton = (Button) findViewById(R.id.stopRecord);
-        stopbutton.setEnabled(false);
+                try {
+                    mRecorder.prepare();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.e(LOG_TAG, "录音准备失败!" );
+                }
+                mRecorder.start();
+                if (mStartRecord != null && mStopRecord != null){
+                    mStartRecord.setText("正在录音......");
+                    mStartRecord.setEnabled(false);
+                    mStopRecord.setEnabled(true);
+                }else {
+                    Log.e(LOG_TAG,"Button未绑定");
+                }
+
+
+            }
+        });
+        mStopRecord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mRecorder.stop();
+                mRecorder.release();
+                mStartRecord.setEnabled(true);
+                mStartRecord.setText("开始录音");
+                mStopRecord.setEnabled(false);
+            }
+        });
+
+
     }
 
     public String getTime(){
@@ -53,40 +94,39 @@ public class MainActivity extends AppCompatActivity {
         return existspath;
     }
 
-    public void startRecord(View view){
-        Button startbutton = (Button) findViewById(R.id.startRecord);
-        Button stopbutton = (Button) findViewById(R.id.stopRecord);
+//    public void startRecord(View view){
+//        Button startbutton = (Button) findViewById(R.id.startRecord);
+//        Button stopbutton = (Button) findViewById(R.id.stopRecord);
+//
+//        mRecorder = new MediaRecorder();
+//        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+//        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
+//        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
+//        mRecorder.setOutputFile(AudioPath());
+//
+//        try {
+//            mRecorder.prepare();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            Log.e(LOG_TAG, "录音准备失败!" );
+//        }
+//        mRecorder.start();
+//        startbutton.setText("正在录音......");
+//        startbutton.setEnabled(false);
+//        stopbutton.setEnabled(true);
+//
+//
+//    }
 
-        mRecorder = new MediaRecorder();
-        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
-        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
-        mRecorder.setOutputFile(AudioPath());
-
-        try {
-            mRecorder.prepare();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.e(LOG_TAG, "录音准备失败!" );
-        }
-        mRecorder.start();
-        startbutton.setText("正在录音......");
-        startbutton.setEnabled(false);
-        stopbutton.setEnabled(true);
-
-
-    }
-
-    public void stopRecord(View view){
-        Button startbutton = (Button) findViewById(R.id.startRecord);
-        Button stopbutton = (Button) findViewById(R.id.stopRecord);
-
-        mRecorder.stop();
-        mRecorder.release();
-
-        startbutton.setEnabled(true);
-        startbutton.setText("开始录音");
-        assert stopbutton != null;
-        stopbutton.setEnabled(false);
-    }
+//    public void stopRecord(View view){
+//        Button startbutton = (Button) findViewById(R.id.startRecord);
+//        Button stopbutton = (Button) findViewById(R.id.stopRecord);
+//
+//        mRecorder.stop();
+//        mRecorder.release();
+//
+//        startbutton.setEnabled(true);
+//        startbutton.setText("开始录音");
+//        stopbutton.setEnabled(false);
+//    }
 }
